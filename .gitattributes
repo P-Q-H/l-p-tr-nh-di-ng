@@ -1,0 +1,40 @@
+# Laravel (PHP)
+*.php text eol=lf
+*.blade.php text eol=lf
+
+# Flutter (Dart)
+*.dart text eol=lf
+
+# Python
+*.py text eol=lf
+
+# SQL
+*.sql text eol=lf
+
+# Cấu hình và script
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.gradle text eol=lf
+*.kts text eol=lf
+
+# Swift (iOS)
+*.swift text eol=lf
+
+# C/C++ (Linux/Windows)
+*.h text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.c text eol=lf
+
+# Git ignore files
+.gitattributes text
+.gitignore text
+
+# Force all text files to use LF
+* text=auto eol=lf
