@@ -10,9 +10,8 @@ class LikeController extends Controller
 {
     public function toggle($postId)
     {
-       $user = auth()->user();
+        $user = auth()->user();
         if (!$user) {
-            \Log::error('Không xác thực được người dùng');
             return response()->json(['error' => 'Unauthenticated'], 401);
         }
 
@@ -26,7 +25,6 @@ class LikeController extends Controller
             return response()->json(['liked' => true]);
         }
     }
-
 
     public function status($postId)
     {

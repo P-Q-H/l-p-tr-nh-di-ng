@@ -5,15 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'PetProfile.dart';
 import '../Service/post_service.dart';
 import 'create_post_screen.dart';
-// import 'postDetailScreen.dart';
-import 'profile.dart';
-//thêm like, comment, share
-import 'package:gdmxhthucung/action/like.dart';
-import 'package:gdmxhthucung/action/comment.dart';
-import 'package:gdmxhthucung/action/share.dart';
-// service like (gọi api like)
-import 'package:gdmxhthucung/service/like_service.dart';
 
+import 'profile.dart';
+
+import 'package:gdmxhthucung/action/like.dart';
+import 'package:gdmxhthucung/button/like_button.dart';
+// import 'package:gdmxhthucung/service/like_service.dart';
 
 class PetSocialHome extends StatefulWidget {
   const PetSocialHome({super.key});
@@ -28,7 +25,11 @@ class _PetSocialHomeState extends State<PetSocialHome> {
   File? imageFile;
   bool isLoading = false;
 
-  List<dynamic> posts = [];
+
+  List<Map<String, dynamic>> posts = [];
+  // posts = List<Map<String, dynamic>>.from(await PostService.fetchAllPosts());
+
+  late LikeAction likeAction;
   String selectedType = 'all';
   String? currentUserId;
   final List<String> petTypes = ['all', 'dog', 'cat', 'rabbit', 'hamster'];
@@ -50,19 +51,17 @@ class _PetSocialHomeState extends State<PetSocialHome> {
     if (picked != null) setState(() => imageFile = File(picked.path));
   }
 
-
   Future<void> fetchPosts() async {
-  final data = selectedType == 'all'
-      ? await PostService.fetchAllPosts()
-      : await PostService.fetchPostsByType(selectedType);
-  setState(() => posts = data);
+    final data = selectedType == 'all'
+        ? await PostService.fetchAllPosts()
+        : await PostService.fetchPostsByType(selectedType);
 
-  // ✅ Gọi trạng thái like sau khi có danh sách bài viết
-  for (var post in data) {
-    final postId = post['id'].toString();
-    fetchLikeStatus(postId);
+    // setState(() => posts = data);
+    setState(() => posts = List<Map<String, dynamic>>.from(data)); // ✅ ép kiểu rõ ràng
+    likeAction = LikeAction(posts: posts, setState: setState);
+    await likeAction.refreshAllLikeStatus();
   }
-}
+
   Future<void> submitPost() async {
     if (nameController.text.isEmpty || imageFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -118,162 +117,81 @@ class _PetSocialHomeState extends State<PetSocialHome> {
       }
     }
   }
-  //Like bài viết 
-Future<void> toggleLike(String postId) async {
-  print('Toggling like for postId: $postId');
-  final liked = await LikeService.toggleLike(postId);
-  print('Liked result: $liked');
-
-  if (liked != null) {
-    setState(() {
-      final index = posts.indexWhere((p) => p['id'].toString() == postId);
-      if (index != -1) {
-        int currentCount = (posts[index]['like_count'] ?? 0) as int;
-
-        // ✅ Cập nhật số like
-        int newCount = liked
-            ? currentCount + 1
-            : currentCount > 0 ? currentCount - 1 : 0;
-
-        posts[index]['like_count'] = newCount;
-
-        // ✅ Cập nhật trạng thái vào likedPosts
-       likedPosts[postId] = {
-        'liked': liked,
-        'count': posts[index]['like_count'],
-      };
-      }
-    });
-  }
-}
-
-
-
-// Lấy trạng thái like ban đầu cho mỗi bài viết
-Future<void> fetchLikeStatus(String postId) async {
-  final result = await LikeService.fetchLikeStatus(postId);
-  if (result != null) {
-    setState(() {
-      likedPosts[postId] = {
-        'liked': result['liked'] == true,
-        'count': result['count'] ?? 0,
-      };
-    });
-  } else {
-    print('Không lấy được trạng thái like cho postId: $postId');
-  }
-}
-
-
-
-void logout() {
-  setState(() {
-    likedPosts.clear(); // ✅ xóa trạng thái like
-  });
-
-  // Thêm các bước đăng xuất khác nếu có
-  Navigator.pushReplacementNamed(context, '/login');
-}
-
- Map<String, Map<String, dynamic>> likedPosts = {}; // ✅ lưu cả trạng thái và số like
-// ✅ lưu trạng thái tim theo postId
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(color: Colors.orange),
-                child: Row(
-                  children: [
-                    Icon(Icons.pets, color: Colors.white, size: 28),
-                    SizedBox(width: 8),
-                    Text('PetSocial', style: TextStyle(color: Colors.white, fontSize: 22)),
-                  ],
-                ),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.orange),
+              child: Row(
+                children: [
+                  Icon(Icons.pets, color: Colors.white, size: 28),
+                  SizedBox(width: 8),
+                  Text('PetSocial', style: TextStyle(color: Colors.white, fontSize: 22)),
+                ],
               ),
-              ListTile(
-                leading: const Icon(Icons.home),
-                title: const Text('Trang chủ'),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.search),
-                title: const Text('Tìm kiếm'),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.pets),
-                title: const Text('Dịch vụ'),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.notifications),
-                title: const Text('Thông báo'),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.add_circle_outline),
-                title: const Text('Tạo bài viết'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => CreatePostScreen(petType: selectedType)),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Hồ sơ'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => PetProfile(petId: currentUserId ?? '')),
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('Cài đặt'),
-                onTap: () => Navigator.pop(context),
-              ),
-              const Divider(),
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: Text('Gợi ý theo dõi', style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              ...[
-                {'name': 'PetLover123', 'info': 'Có 3 chú chó'},
-                {'name': 'CatMom88', 'info': 'Có 2 chú mèo'},
-                {'name': 'BunnyDad', 'info': 'Có 1 chú thỏ'},
-              ].map((user) => ListTile(
-                    leading: const CircleAvatar(child: Icon(Icons.person)),
-                    title: Text(user['name']!),
-                    subtitle: Text(user['info']!),
-                    trailing: ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Theo dõi'),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                    ),
-                  )),
-            ],
-          ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Trang chủ'),
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Hồ sơ'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PetProfile(petId: currentUserId ?? '')),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_circle_outline),
+              title: const Text('Tạo bài viết'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => CreatePostScreen(petType: selectedType)),
+                );
+              },
+            ),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.all(12),
+              child: Text('Gợi ý theo dõi', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            ...[
+              {'name': 'PetLover123', 'info': 'Có 3 chú chó'},
+              {'name': 'CatMom88', 'info': 'Có 2 chú mèo'},
+              {'name': 'BunnyDad', 'info': 'Có 1 chú thỏ'},
+            ].map((user) => ListTile(
+                  leading: const CircleAvatar(child: Icon(Icons.person)),
+                  title: Text(user['name']!),
+                  subtitle: Text(user['info']!),
+                  trailing: ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Theo dõi'),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                  ),
+                )),
+          ],
         ),
-
+      ),
       appBar: AppBar(
         title: const Text('PetSocial'),
         backgroundColor: Colors.orange[100],
-        // chuyển qua trang profile.dart
+
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: () async{
+            onPressed: () async {
               final prefs = await SharedPreferences.getInstance();
               final currentUserId = prefs.getString('user_id');
               Navigator.push(
@@ -347,7 +265,7 @@ void logout() {
                           : const Text("Đăng bài viết"),
                     ),
                   ],
-                ),
+                              ),
               ),
             ),
             const Divider(),
@@ -359,8 +277,9 @@ void logout() {
               ),
             ),
             ...posts.map((post) {
-              final isOwner = post['user_id'].toString() == currentUserId;// kiểm tra chủ bài viết
-               final postId = post['id'].toString(); // ✅ đặt ở đây để sử dụng trong LikeButton
+              final postId = post['id'].toString();
+              final isOwner = post['user_id'].toString() == currentUserId;
+
               return Card(
                 margin: const EdgeInsets.all(8),
                 color: Colors.orange[50],
@@ -378,7 +297,7 @@ void logout() {
                           if (isOwner)
                             IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => confirmDelete(post['id'].toString()),
+                              onPressed: () => confirmDelete(postId),
                             ),
                         ],
                       ),
@@ -389,8 +308,8 @@ void logout() {
                         child: Image.network(
                           'http://192.168.1.7:8000/storage/${post['image']}',
                           height: 200,
-                          width: double.infinity, // ✅ chiếm toàn bộ chiều ngang
-                          fit: BoxFit.cover,      // ✅ giữ tỷ lệ ảnh đẹp
+                          width: double.infinity,
+                          fit: BoxFit.cover,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
                             return const Center(child: CircularProgressIndicator());
@@ -399,32 +318,36 @@ void logout() {
                               const Center(child: Text('Không tải được ảnh')),
                         ),
                       ),
-
+                      const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(post['description']),
                     ),
-                    
-                    // Thêm nút like, comment, share
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        LikeButton(
-                          liked: likedPosts[postId]?['liked'] == true,
-                          likeCount: likedPosts[postId]?['count'] ?? post['like_count'] ?? 0,
-                          onPressed: () => toggleLike(postId),
-                        ),
-                        CommentButton(
-                          onPressed: () {
-                            // xử lý bình luận
-                          },
-                        ),
-                        ShareButton(
-                          onPressed: () {
-                            // xử lý chia sẻ
-                          },
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                    LikeButton(
+                      liked: likeAction.likedPosts[postId]?['liked'] == true,
+                      likeCount: likeAction.likedPosts[postId]?['count'] ?? post['like_count'] ?? 0,
+                      onPressed: () => likeAction.toggleLike(postId),
+                    ),
+
+                          IconButton(
+                            icon: const Icon(Icons.comment),
+                            onPressed: () {
+                              // xử lý bình luận
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.share),
+                            onPressed: () {
+                              // xử lý chia sẻ
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -455,3 +378,4 @@ class _PetStory extends StatelessWidget {
     );
   }
 }
+

@@ -53,11 +53,14 @@ Route::get('/posts', [PostController::class, 'index']);
 // xóa bài viết 
 Route::middleware('auth:api')->delete('/posts/{id}', [PostController::class, 'destroy']);
 
-// like bài viết
+
+
+//like bài viết
 Route::middleware('auth:api')->group(function () {
-    Route::post('/posts/{id}/like', [LikeController::class, 'toggle']);
-    Route::get('/posts/{id}/likes', [LikeController::class, 'status']);
+    Route::post('/posts/{postId}/like', [LikeController::class, 'toggle']);
+    Route::get('/posts/{postId}/likes', [LikeController::class, 'status']);
 });
+
 
 
 
