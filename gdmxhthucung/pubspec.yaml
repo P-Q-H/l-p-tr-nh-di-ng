@@ -1,0 +1,35 @@
+name: gdmxhthucung
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.0.5
+  shared_preferences: ^2.2.2
+  image_picker: ^1.0.4
+  http: ^1.1.0
+  http_parser: ^4.0.2
+  file_picker: ^10.3.3
+  easy_localization: ^3.0.1 #đọc ngôn ngữ
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/langs/vi.json
+    - assets/langs/en.json
+
+
+  # flutter run -d 727d925c
