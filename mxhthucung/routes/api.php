@@ -60,6 +60,23 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/posts/{postId}/like', [LikeController::class, 'toggle']);
     Route::get('/posts/{postId}/likes', [LikeController::class, 'status']);
 });
+// danh sách bài viết đã thích của người dùng
+Route::middleware('auth:api')->get('/user/liked-posts', [LikeController::class, 'likedPosts']);
+// lấy tất cả bài viết đã like
+Route::middleware('auth:api')->group(function () {
+  // Trong Route::middleware('auth:api')->group(function () {
+Route::post('/posts/{postId}/like', [LikeController::class, 'toggle']);
+Route::get('/posts/{postId}/likes', [LikeController::class, 'status']);
+Route::get('/posts/liked', [LikeController::class, 'getLikedPosts']); // ✅ Route mới
+});
+
+Route::middleware('auth:api')->group(function () {
+   // Thêm vào Route::middleware('auth:api')->group
+  Route::get('/posts/{postId}/comments', [CommentController::class, 'index']);
+  Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
+  Route::delete('/comments/{commentId}', [CommentController::class, 'destroy']);
+});
+
 
 
 

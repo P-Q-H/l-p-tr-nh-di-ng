@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'PetProfile.dart';
 import '../Service/post_service.dart';
 import 'create_post_screen.dart';
+import 'postDetailScreen.dart';
+// import '../Service/comment_service.dart';
 
 import 'profile.dart';
 
@@ -334,12 +336,18 @@ class _PetSocialHomeState extends State<PetSocialHome> {
                       onPressed: () => likeAction.toggleLike(postId),
                     ),
 
-                          IconButton(
-                            icon: const Icon(Icons.comment),
-                            onPressed: () {
-                              // xử lý bình luận
-                            },
-                          ),
+                         IconButton(
+                          icon: const Icon(Icons.comment),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PostDetailScreen(post: post),
+                              ),
+                            );
+                          },
+                        ),
+
                           IconButton(
                             icon: const Icon(Icons.share),
                             onPressed: () {

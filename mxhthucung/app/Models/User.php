@@ -10,10 +10,18 @@ use Laravel\Passport\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens,  Notifiable;
+
+// danh sách bài viết đã thích của người dùng hiện tại
 public function likedPosts()
 {
     return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
 }
+// bài viết đã thích của người dùng
+public function likes()
+{
+    return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
+}
+
 
     protected $fillable = [
         'name',

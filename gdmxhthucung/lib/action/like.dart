@@ -10,7 +10,8 @@ class LikeAction {
   Future<void> toggleLike(String postId) async {
     final liked = await LikeService.toggleLike(postId);
     if (liked != null) {
-      await fetchLikeStatus(postId); // ✅ Lấy lại trạng thái và số tim thật từ server
+      // ✅ Luôn fetch lại status từ server để có số chính xác
+      await fetchLikeStatus(postId);
     }
   }
 
