@@ -8,6 +8,7 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\PetController;
 use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\API\LikeController;
+use App\Http\Controllers\API\CommentController;  
 
 
 

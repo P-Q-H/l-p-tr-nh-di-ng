@@ -7,6 +7,7 @@ import '../Service/post_service.dart';
 import 'create_post_screen.dart';
 import 'postDetailScreen.dart';
 // import '../Service/comment_service.dart';
+import '../action/comment.dart';
 
 import 'profile.dart';
 
@@ -32,6 +33,9 @@ class _PetSocialHomeState extends State<PetSocialHome> {
   // posts = List<Map<String, dynamic>>.from(await PostService.fetchAllPosts());
 
   late LikeAction likeAction;
+  late CommentAction commentAction; // ✅ Thêm CommentAction
+
+
   String selectedType = 'all';
   String? currentUserId;
   final List<String> petTypes = ['all', 'dog', 'cat', 'rabbit', 'hamster'];
@@ -60,8 +64,12 @@ class _PetSocialHomeState extends State<PetSocialHome> {
 
     // setState(() => posts = data);
     setState(() => posts = List<Map<String, dynamic>>.from(data)); // ✅ ép kiểu rõ ràng
+    //  khởi tạo lại LikeAction và CommentAction với posts mới
     likeAction = LikeAction(posts: posts, setState: setState);
+    commentAction = CommentAction(posts: posts, setState: setState);
+
     await likeAction.refreshAllLikeStatus();
+    await commentAction.refreshAllCommentCounts(); // ✅ Làm mới số lượng comment
   }
 
   Future<void> submitPost() async {

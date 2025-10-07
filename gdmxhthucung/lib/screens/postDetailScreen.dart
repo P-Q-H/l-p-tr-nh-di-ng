@@ -5,6 +5,7 @@ import '../action/like.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final Map<String, dynamic> post;
+  
 
   const PostDetailScreen({super.key, required this.post});
 
