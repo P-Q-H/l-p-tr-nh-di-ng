@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'LanguageNotifier/language_notifier.dart';
+// import 'LanguageAndTheme/language_notifier.dart';
 import 'ThemeNotifier/theme_notifier.dart';
 import 'screens/PetSocialHome.dart';
 
@@ -20,7 +20,7 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => themeNotifier),
-          ChangeNotifierProvider(create: (_) => LanguageNotifier()),
+          // ChangeNotifierProvider(create: (_) => LanguageAndTheme()),
         ],
         child: const MyApp(),
       ),
@@ -34,10 +34,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    final languageNotifier = Provider.of<LanguageNotifier>(context);
+    // final languageNotifier = Provider.of<LanguageAndTheme>(context);
 
     // Load lại ngôn ngữ khi build app
-    languageNotifier.loadLanguageFromPrefs(context);
+    // languageNotifier.loadLanguageFromPrefs(context);
 
     return MaterialApp(
       title: 'Pet Social',
