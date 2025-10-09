@@ -5,12 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\PostController;
-use App\Http\Controllers\API\PetController;
 use App\Http\Controllers\API\SettingsController;
 use App\Http\Controllers\API\LikeController;
-use App\Http\Controllers\API\CommentController;  
-
-
+use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\FollowController;
 
 // 🔐 Xác thực tài khoản
 Route::post('/register', [AuthController::class, 'register']);
@@ -26,59 +24,43 @@ Route::middleware('auth:api')->group(function () {
 
     // 🌐 Ngôn ngữ & hồ sơ
     Route::post('/language', [UserController::class, 'updateLanguage']);
-    Route::post('/edit-profile', [UserController::class, 'editProfile']);
-    Route::post('/change-password', [UserController::class, 'changePassword']);
-    
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::post('/users/{id}/avatar', [UserController::class, 'uploadAvatar']);
+    Route::post('/users/change-password', [UserController::class, 'changePassword']);
 
     // ⚙️ Cài đặt người dùng
     Route::get('/settings', [SettingsController::class, 'getSettings']);
-    Route::post('/settings/update', [SettingsController::class, 'updateSettings']);
-    Route::middleware('auth:api')->post('/settings/update', [SettingsController::class, 'update']);
-    // Route::get('/api/users/{id}', [UserController::class, 'show']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::post('/settings/update', [SettingsController::class, 'update']);
 
-
-    // 🐾 Hồ sơ thú cưng của người dùng
+    // 🐾 Hồ sơ thú cưng
     Route::get('/pet-profile', [PostController::class, 'getUserPosts']);
     Route::put('/pet-profile/{id}', [PostController::class, 'updatePost']);
     Route::delete('/pet-profile/{id}', [PostController::class, 'deletePost']);
 
-   
+    // 📝 Đăng bài viết
+    Route::post('/posts', [PostController::class, 'store']);
+    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+
+    // ❤️ Like bài viết
+    Route::post('/posts/{postId}/like', [LikeController::class, 'toggle']);
+    Route::get('/posts/{postId}/likes', [LikeController::class, 'status']);
+    Route::get('/posts/liked', [LikeController::class, 'getLikedPosts']);
+
+    // 💬 Bình luận
+    Route::get('/posts/{postId}/comments', [CommentController::class, 'index']);
+    Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{commentId}', [CommentController::class, 'destroy']);
+
+    // 👥 Follow/Unfollow
+    Route::post('/users/{userId}/follow', [FollowController::class, 'toggle']);
+    Route::get('/users/{userId}/follow-status', [FollowController::class, 'checkStatus']);
+    Route::get('/users/{userId}/follow-stats', [FollowController::class, 'getStats']);
+    Route::get('/users/{userId}/followers', [FollowController::class, 'getFollowers']);
+    Route::get('/users/{userId}/following', [FollowController::class, 'getFollowing']);
 });
-// đăng bài viết
-Route::middleware('auth:api')->post('/posts', [PostController::class, 'store']);
+
+// 📱 Public routes
 Route::get('/posts/type/{petType}', [PostController::class, 'filterByType']);
 Route::get('/posts/user/{id}/{petType}', [PostController::class, 'getByUserAndType']);
 Route::get('/posts', [PostController::class, 'index']);
-
-// xóa bài viết 
-Route::middleware('auth:api')->delete('/posts/{id}', [PostController::class, 'destroy']);
-
-
-
-//like bài viết
-Route::middleware('auth:api')->group(function () {
-    Route::post('/posts/{postId}/like', [LikeController::class, 'toggle']);
-    Route::get('/posts/{postId}/likes', [LikeController::class, 'status']);
-});
-// danh sách bài viết đã thích của người dùng
-Route::middleware('auth:api')->get('/user/liked-posts', [LikeController::class, 'likedPosts']);
-// lấy tất cả bài viết đã like
-Route::middleware('auth:api')->group(function () {
-  // Trong Route::middleware('auth:api')->group(function () {
-Route::post('/posts/{postId}/like', [LikeController::class, 'toggle']);
-Route::get('/posts/{postId}/likes', [LikeController::class, 'status']);
-Route::get('/posts/liked', [LikeController::class, 'getLikedPosts']); // ✅ Route mới
-});
-
-Route::middleware('auth:api')->group(function () {
-   // Thêm vào Route::middleware('auth:api')->group
-  Route::get('/posts/{postId}/comments', [CommentController::class, 'index']);
-  Route::post('/posts/{postId}/comments', [CommentController::class, 'store']);
-  Route::delete('/comments/{commentId}', [CommentController::class, 'destroy']);
-});
-
-
-
-
-

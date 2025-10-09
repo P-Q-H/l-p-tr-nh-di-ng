@@ -14,6 +14,9 @@ import 'profile.dart';
 import 'package:gdmxhthucung/action/like.dart';
 import 'package:gdmxhthucung/button/like_button.dart';
 // import 'package:gdmxhthucung/service/like_service.dart';
+import 'OtherUserProfile.dart';
+// import 'FollowListScreen.dart';
+
 
 class PetSocialHome extends StatefulWidget {
   const PetSocialHome({super.key});
@@ -296,9 +299,52 @@ class _PetSocialHomeState extends State<PetSocialHome> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // xem thông tin người dùng bằng cách nhấn vào tên hoặc ảnh đại diện
                     ListTile(
-                      leading: const CircleAvatar(child: Icon(Icons.person)),
-                      title: Text(post['username']),
+                      leading: GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => OtherUserProfileScreen(
+          userId: post['user_id'].toString(),
+          userName: post['username'],
+        ),
+      ),
+    );
+  },
+  child: CircleAvatar(
+    radius: 20,
+    backgroundImage: post['avatar_url'] != null
+        ? NetworkImage(post['avatar_url'])
+        : null,
+    backgroundColor: Colors.grey[200],
+    child: post['avatar_url'] == null
+        ? const Icon(Icons.person, color: Colors.grey)
+        : null,
+  ),
+
+                      ),
+                      title: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => OtherUserProfileScreen(
+                                userId: post['user_id'].toString(),
+                                userName: post['username'],
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          post['username'],
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
                       subtitle: Text('${post['pet_name']} - ${post['breed']}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -312,6 +358,7 @@ class _PetSocialHomeState extends State<PetSocialHome> {
                         ],
                       ),
                     ),
+// hiển thị ảnh nếu có
                     if (post['image'] != null)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../ThemeNotifier/theme_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -9,34 +11,19 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String currentTheme = 'light';
   String currentLanguage = 'vi';
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    _loadLanguage();
   }
 
-  Future<void> _loadSettings() async {
+  Future<void> _loadLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      currentTheme = prefs.getString('theme') ?? 'light';
       currentLanguage = prefs.getString('language') ?? 'vi';
     });
-  }
-
-  Future<void> _saveTheme(String theme) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('theme', theme);
-    setState(() {
-      currentTheme = theme;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(currentLanguage == 'vi' 
-        ? 'Đã đổi sang chế độ ${theme == 'light' ? 'sáng' : 'tối'}' 
-        : 'Changed to ${theme == 'light' ? 'light' : 'dark'} mode')),
-    );
   }
 
   Future<void> _saveLanguage(String language) async {
@@ -45,55 +32,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       currentLanguage = language;
     });
+    
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(language == 'vi' 
-        ? 'Đã đổi sang tiếng Việt' 
-        : 'Changed to English')),
+      SnackBar(
+        content: Text(language == 'vi' 
+          ? 'Đã đổi sang tiếng Việt. Vui lòng khởi động lại ứng dụng để áp dụng.' 
+          : 'Changed to English. Please restart the app to apply.'),
+        duration: const Duration(seconds: 3),
+      ),
     );
   }
 
-  void _showThemeDialog() {
+  void _showThemeDialog(BuildContext context, ThemeNotifier themeNotifier) {
+    String currentThemeString = 'system';
+    if (themeNotifier.themeMode == ThemeMode.light) {
+      currentThemeString = 'light';
+    } else if (themeNotifier.themeMode == ThemeMode.dark) {
+      currentThemeString = 'dark';
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(currentLanguage == 'vi' ? 'Chọn giao diện' : 'Choose Theme'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: Text(currentLanguage == 'vi' ? 'Sáng' : 'Light'),
-              value: 'light',
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
-                  _saveTheme(value);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            RadioListTile<String>(
-              title: Text(currentLanguage == 'vi' ? 'Tối' : 'Dark'),
-              value: 'dark',
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
-                  _saveTheme(value);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            RadioListTile<String>(
-              title: Text(currentLanguage == 'vi' ? 'Hệ thống' : 'System'),
-              value: 'system',
-              groupValue: currentTheme,
-              onChanged: (value) {
-                if (value != null) {
-                  _saveTheme(value);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
+        content: StatefulBuilder(
+          builder: (context, setDialogState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<String>(
+                  title: Text(currentLanguage == 'vi' ? 'Sáng' : 'Light'),
+                  value: 'light',
+                  groupValue: currentThemeString,
+                  onChanged: (value) async {
+                    if (value != null) {
+                      await themeNotifier.setTheme(value);
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(currentLanguage == 'vi' 
+                          ? 'Đã đổi sang chế độ sáng' 
+                          : 'Changed to light mode')),
+                      );
+                    }
+                  },
+                ),
+                RadioListTile<String>(
+                  title: Text(currentLanguage == 'vi' ? 'Tối' : 'Dark'),
+                  value: 'dark',
+                  groupValue: currentThemeString,
+                  onChanged: (value) async {
+                    if (value != null) {
+                      await themeNotifier.setTheme(value);
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(currentLanguage == 'vi' 
+                          ? 'Đã đổi sang chế độ tối' 
+                          : 'Changed to dark mode')),
+                      );
+                    }
+                  },
+                ),
+                RadioListTile<String>(
+                  title: Text(currentLanguage == 'vi' ? 'Hệ thống' : 'System'),
+                  value: 'system',
+                  groupValue: currentThemeString,
+                  onChanged: (value) async {
+                    if (value != null) {
+                      await themeNotifier.setTheme(value);
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(currentLanguage == 'vi' 
+                          ? 'Đã đổi sang chế độ hệ thống' 
+                          : 'Changed to system mode')),
+                      );
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -135,34 +152,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  String _getThemeName() {
+  String _getThemeName(ThemeMode themeMode) {
     if (currentLanguage == 'vi') {
-      switch (currentTheme) {
-        case 'light':
+      switch (themeMode) {
+        case ThemeMode.light:
           return 'Sáng';
-        case 'dark':
+        case ThemeMode.dark:
           return 'Tối';
-        case 'system':
+        case ThemeMode.system:
           return 'Hệ thống';
-        default:
-          return 'Sáng';
       }
     } else {
-      switch (currentTheme) {
-        case 'light':
+      switch (themeMode) {
+        case ThemeMode.light:
           return 'Light';
-        case 'dark':
+        case ThemeMode.dark:
           return 'Dark';
-        case 'system':
+        case ThemeMode.system:
           return 'System';
-        default:
-          return 'Light';
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(currentLanguage == 'vi' ? 'Cài đặt' : 'Settings'),
@@ -173,9 +188,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.palette),
             title: Text(currentLanguage == 'vi' ? 'Giao diện' : 'Theme'),
-            subtitle: Text(_getThemeName()),
+            subtitle: Text(_getThemeName(themeNotifier.themeMode)),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: _showThemeDialog,
+            onTap: () => _showThemeDialog(context, themeNotifier),
           ),
           const Divider(),
           ListTile(

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 29, 2025 at 05:51 PM
+-- Generation Time: Oct 09, 2025 at 06:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,56 @@ SET time_zone = "+00:00";
 --
 -- Database: `mxh_thu_cung`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `post_id` bigint(20) UNSIGNED NOT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `comments`
+--
+
+INSERT INTO `comments` (`id`, `user_id`, `post_id`, `content`, `created_at`, `updated_at`) VALUES
+(1, 13, 23, 'ok', '2025-10-07 00:31:12', '2025-10-07 00:31:12'),
+(2, 19, 23, 'hello', '2025-10-07 01:01:26', '2025-10-07 01:01:26'),
+(3, 21, 23, 'xin chào', '2025-10-07 16:49:09', '2025-10-07 16:49:09'),
+(4, 13, 24, 'pet j lạ vâyh', '2025-10-08 21:15:49', '2025-10-08 21:15:49'),
+(5, 13, 26, 'a đù', '2025-10-09 04:20:20', '2025-10-09 04:20:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `follows`
+--
+
+CREATE TABLE `follows` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `follower_id` bigint(20) UNSIGNED NOT NULL,
+  `following_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `follows`
+--
+
+INSERT INTO `follows` (`id`, `follower_id`, `following_id`, `created_at`, `updated_at`) VALUES
+(2, 13, 21, '2025-10-09 04:22:19', '2025-10-09 04:22:19'),
+(3, 13, 19, '2025-10-09 04:23:36', '2025-10-09 04:23:36'),
+(4, 19, 13, '2025-10-09 04:28:12', '2025-10-09 04:28:12'),
+(5, 19, 21, '2025-10-09 08:39:44', '2025-10-09 08:39:44');
 
 -- --------------------------------------------------------
 
@@ -44,13 +94,16 @@ INSERT INTO `likes` (`id`, `user_id`, `post_id`, `created_at`, `updated_at`) VAL
 (21, 20, 17, NULL, NULL),
 (25, 20, 18, NULL, NULL),
 (26, 20, 15, NULL, NULL),
-(28, 19, 14, NULL, NULL),
-(36, 13, 21, NULL, NULL),
-(37, 13, 19, NULL, NULL),
-(38, 13, 18, NULL, NULL),
-(39, 13, 17, NULL, NULL),
-(40, 13, 15, NULL, NULL),
-(41, 13, 14, NULL, NULL);
+(71, 13, 22, NULL, NULL),
+(102, 13, 14, NULL, NULL),
+(115, 13, 23, NULL, NULL),
+(116, 19, 23, NULL, NULL),
+(117, 21, 23, NULL, NULL),
+(119, 13, 21, NULL, NULL),
+(120, 13, 24, NULL, NULL),
+(122, 13, 25, NULL, NULL),
+(123, 13, 26, NULL, NULL),
+(124, 19, 26, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -81,7 +134,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (11, '2025_09_15_024115_add_language_to_users_table', 5),
 (12, '2025_09_16_023631_add_pet_name_to_users_table', 6),
 (13, '2025_09_21_075925_add_user_id_to_posts_table', 7),
-(14, '2025_09_24_030709_add_like_count_to_posts_table', 8);
+(14, '2025_09_24_030709_add_like_count_to_posts_table', 8),
+(15, '2025_10_06_071426_create_comments_table', 9),
+(16, '2025_10_09_040921_add_avatar_and_phone_to_users_table', 10),
+(17, '2025_10_09_105842_create_follows_table', 11);
 
 -- --------------------------------------------------------
 
@@ -112,10 +168,14 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('05a371a6ac203dd6ea27ff04d5819eae365b6aa0f9a89f58b7e78fba5735ed70b82124cd55be6969', 14, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 18:57:30', '2025-09-12 18:57:30', '2026-09-13 01:57:30'),
 ('07cffe8f95beaf27b3eaadf3e7716764709f977005e2bf94949ba2a0b8ec713b96c97523e83cc9e5', 5, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 02:02:57', '2025-09-21 02:02:58', '2026-09-21 09:02:57'),
 ('087b3dede3e8ea80db9d2f07445737f98041bc428658617b0b65482bb2ae2b0ed55a210c5ef26372', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 18:53:39', '2025-09-14 18:53:39', '2026-09-15 01:53:39'),
+('095235933e19b4d781b29539c8c557c11cf5c2ba6f9032a39464526eead6e4b1d2fd2e43aaf98ccc', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-07 16:50:37', '2025-10-07 16:50:37', '2026-10-07 23:50:37'),
 ('0af9002143f7b9936278b41f1b2e743ab834e69b26eda1d1c3863541f215b95f8750919e1a036e26', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 21:52:47', '2025-09-21 21:52:47', '2026-09-22 04:52:47'),
 ('0e6ed832f2354613ea1f16147a26c54d31357456cf8ee835580c7bb142da913b3dfcc9da01f5c05c', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-15 18:33:28', '2025-09-15 18:33:28', '2026-09-16 01:33:28'),
+('0ee6bf98bbb0e8406594bc3515244b274dd142475b0fdaba24a67b7e15ce1422e59d0d7b5f492a71', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:36:04', '2025-09-29 10:36:04', '2026-09-29 17:36:04'),
 ('0fa20be5f8dabb5db75537c6676e6a289f5dfc8034a87b6ad73ebc0d6aecb929c269433c70f69a8b', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 02:35:09', '2025-09-29 02:35:09', '2026-09-29 09:35:09'),
+('10b3ee15642fe40bbc597d8642d0ed18f4a95418d7a370ed3c06e0e07aacc600118050e90b5242aa', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:28:51', '2025-09-29 10:28:51', '2026-09-29 17:28:51'),
 ('11eae628ab4868e587a225ffce09126b12cb601080735f4baf3f0b2874fe4f975fb14b29f1fc1705', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:01:38', '2025-09-21 22:01:38', '2026-09-22 05:01:38'),
+('1274bdc2fa110328834984f9d118c697fb986d422ef31aedd97fbf43e93b08ca155959ef7ae39980', 21, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-07 16:48:52', '2025-10-07 16:48:52', '2026-10-07 23:48:52'),
 ('136bf0028d2d24205f8350e45a39bd17833974698f6f8a2f333d744002394318a1f0908cb2f59005', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:29:09', '2025-09-12 19:29:09', '2026-09-13 02:29:09'),
 ('15df21a053f5bf46a96833b745a217d6d2dbebd643730c6b47ee2f0486f0c3effdc24b921a38158d', 20, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-23 07:23:44', '2025-09-23 07:23:44', '2026-09-23 14:23:44'),
 ('16c0804bb1b50c1953086541471a638a76e7149922aa87d8acb79cbca21e241b7e10ed1b1819acbe', 2, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 00:43:38', '2025-09-11 00:43:38', '2026-09-11 07:43:38'),
@@ -133,6 +193,7 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('2e8e082c55bc72495ba4b657ecc34d44780f658251abca9d5859d4dea7595a5c899f76ff38ec23f4', 7, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-12 00:03:50', '2025-09-12 00:04:02', '2026-09-12 07:03:50'),
 ('2ed13af9409b12933e72916fca72190b2e3dfdd4888cedbed4500e08a3de1ec7304ec52b042404a1', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:37:47', '2025-09-21 22:37:47', '2026-09-22 05:37:47'),
 ('2f86b74b1f86b40cea430a4e98b075cdbcd5370f491b4f382ccc734d66fa18941b8260a93ddd7b87', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:37:10', '2025-09-12 19:37:10', '2026-09-13 02:37:10'),
+('327afc3781b7664a8560f0e5d680f4558ff07950979c747bfbae032f52015099980fe0ca131bf086', 21, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-07 16:48:41', '2025-10-07 16:48:41', '2026-10-07 23:48:41'),
 ('32b14676985490519a41239aae6755ff1b344ccc43b8177fd6980ba6e9d11c6d180e9ebf965f3ad4', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-12 17:19:52', '2025-09-12 17:20:00', '2026-09-13 00:19:52'),
 ('34501c9a60209ceb202fa69de0273a273b608ad8d012bbef8c3df397467f78b9e3744ec8f887f868', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 20:26:20', '2025-09-12 20:26:20', '2026-09-13 03:26:20'),
 ('346b210eb99bf66cd1930594972a41cdac3979bd9c8b0b5cb6334c0c44e2c70de366b1209785efa7', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 01:40:50', '2025-09-13 01:40:50', '2026-09-13 08:40:50'),
@@ -140,22 +201,28 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('3562cb1679145b80daf917bd76fc6aee0028276127c24af9de0c511642878bdf3133cecc0eb3bcc7', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 19:32:59', '2025-09-14 19:32:59', '2026-09-15 02:32:59'),
 ('3cf534ccb9846fe4c805453db8f9203f79903020aa1626923a63ae3c1b5bb63bc1f3705b7c6ab045', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 19:45:10', '2025-09-14 19:45:10', '2026-09-15 02:45:10'),
 ('43762b34a3b3e453fcc19822a9584dcfd0fb8718bcdcf70ec1d22e951ede0a1195e8769b0f5ac3f9', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 16:31:08', '2025-09-13 16:31:08', '2026-09-13 23:31:08'),
+('4472e11866c3a6f14ae7f145ac4f9271c9147463ee45dc75710693c13b523ce79746c5e87190b174', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 09:27:17', '2025-09-29 09:27:17', '2026-09-29 16:27:17'),
+('46d55849238bf8a3f9d74bf70536d940d22b8ecb19bbd8c5b6e6d5c096c23795d22915b8c12f88ff', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 09:11:28', '2025-09-29 09:11:28', '2026-09-29 16:11:28'),
 ('4ef477fa4e4e891c4c158893ca4bd0810808ecfb4103fb74b55dd53d7be22a925911c960ac19db29', 17, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-15 19:53:13', '2025-09-15 19:53:13', '2026-09-16 02:53:13'),
 ('5405ff73234e07a1ab753cbc00fdc8221379d23f811cfecca220f2c3d72ebfe352db13560ea53dae', 2, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 00:43:21', '2025-09-11 00:43:21', '2026-09-11 07:43:21'),
 ('55b62cd4d6e99edf3eeba2e6a5879f7de21e12b8b8147d3464ee3a3cbdde9b6896a5c1554e522342', 1, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 00:37:53', '2025-09-11 00:37:53', '2026-09-11 07:37:53'),
+('587fc2478ec316c9793749f0f71c78e32dfab3fef6868461e92a4f8130ef409689c06e603c2e36f0', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-07 00:31:28', '2025-10-07 00:31:28', '2026-10-07 07:31:28'),
 ('591348a4308545e461056936d3733188250b666c7e93ce906faec265a5a05851083f192adbeef4c4', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-24 02:47:28', '2025-09-24 02:47:28', '2026-09-24 09:47:28'),
 ('5966a5b4f14cb9a60ec36fc0633e8ff556a0f3e6b49ec2ba5f9c1b0ca3164c826c2dfe2a4194b465', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-18 21:17:08', '2025-09-18 21:17:08', '2026-09-19 04:17:08'),
 ('5a241d59c69e14ab49c6c028aa48c27ae83aafe9a7c188c0bbc32c9445147f92df43daa67003fe19', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 19:30:39', '2025-09-14 19:30:39', '2026-09-15 02:30:39'),
 ('5ba1ac43fad79aaebef54eb4f04f19f3e23b6576cbb49341859a0e0d9b14f344686c127f03f0b746', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-24 01:43:14', '2025-09-24 01:43:14', '2026-09-24 08:43:14'),
 ('5e324dbf1db10c86ab25c57d2c5ca83f9a2872fdae12e9640de5567c59a2b548d2d5720c686af448', 10, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 00:08:24', '2025-09-12 00:08:24', '2026-09-12 07:08:24'),
+('629c54c37c8373ff2bb8e5de1a0ac5f0bb73aa95398b5e9c483ea6dbcbbf4146a78dac2f34d3fef0', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-09 04:28:03', '2025-10-09 04:28:03', '2026-10-09 11:28:03'),
 ('63e23c2d609776c091762b0d1084b7eecb267ef896b1c95a2640d6bf04642e252c70e68780441fbb', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:34:09', '2025-09-21 22:34:09', '2026-09-22 05:34:09'),
 ('6576165d41fad4e9c863167b88893eb7d0a3a4f14706fc4186d11412f153c1005aedc990bbb49e0d', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 21:44:24', '2025-09-12 21:44:24', '2026-09-13 04:44:24'),
 ('65be2f1eb7af291198c8c9069a0fd69acec7a5516d0f187a9546ea1624d3b3dff5b73f3deda9f0d0', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-22 01:11:19', '2025-09-22 01:11:19', '2026-09-22 08:11:19'),
 ('65eb6d0c8f3eba9374100ea76e99cb7b8c543550bcfb9d2669e84e03d0019ed4b72d9b55bc0bf386', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:08:17', '2025-09-12 19:08:17', '2026-09-13 02:08:17'),
 ('6702c8d304dd6c1957ab4908c4565ec6cc331311c5cac95a51631b490963cb6711b27205b8e90c9f', 5, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 20:23:27', '2025-09-11 20:23:27', '2026-09-12 03:23:27'),
 ('67bc8409143aefa12eed8885678b52b96b4ef63542ffc8e659b295800f7541b4ff919952d840fc9b', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-22 01:47:08', '2025-09-22 01:47:08', '2026-09-22 08:47:08'),
+('68854cb3c74d9479c1e361e7a069584d7302d0f3821c796f4f721fc58d2027859f8a0eb5fd74ec69', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:32:37', '2025-09-29 10:32:37', '2026-09-29 17:32:37'),
 ('68e05e7919973e88e4a38fdf089d62da63364a25dfada28d041e6a3171ad7033fe423fb226085a17', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:52:18', '2025-09-12 19:52:18', '2026-09-13 02:52:18'),
 ('6ac77614ac604d2c10a585acdfecb091ac98450663abaee9f69aaaba5072e394063b5a6ff2f78a76', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:27:30', '2025-09-21 22:27:30', '2026-09-22 05:27:30'),
+('6c9b88e7fc65500810de14c18798567a2f65ea984dd52d23f91badd5bcbc395ff06f99c07022d9db', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:32:20', '2025-09-29 10:32:20', '2026-09-29 17:32:20'),
 ('6edf4e68a403c49d426fcfdb265548a4cc869392f718d43766388b9080f13c8d7d3349be34828803', 17, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-15 19:45:53', '2025-09-15 19:45:53', '2026-09-16 02:45:53'),
 ('70b00f628f77bc4e001d92bf488c6afa930f02917a2c8f4c24976cfa70f43e6ddd1d53442d0b6606', 4, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 19:03:30', '2025-09-11 19:03:30', '2026-09-12 02:03:30'),
 ('7442a305caa1b5823446ebacb7ac4f121724074e93458a7b0f84c218a2bffc68300eaba88a00c8de', 4, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 20:30:07', '2025-09-11 20:30:07', '2026-09-12 03:30:07'),
@@ -165,12 +232,15 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('7b205ca311711d09d8a923bb6a274874af64bdeaba798878b91eed24c91a6cbe35ed44d7ccf8f8ab', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-12 17:35:32', '2025-09-12 17:35:36', '2026-09-13 00:35:32'),
 ('7e9730f629de8b4e52125bc5ef05d4006faf68eabf27340cda6c3d91439a2c1fb6e01a4de6971e18', 1, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 00:41:53', '2025-09-11 00:41:53', '2026-09-11 07:41:53'),
 ('8150fff6ec884209a815c2434031e7eb5639085d365f782841a72feac930828ebe534d8b6c61e05f', 17, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-15 19:52:55', '2025-09-15 19:52:55', '2026-09-16 02:52:55'),
+('845139128cdec1891caf6620348f22523458326b5b0ebc10f32f742938c710c1b8d030cb57b5211a', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:36:17', '2025-09-29 10:36:17', '2026-09-29 17:36:17'),
 ('85182013a3b50377fef09f33032ca0509fbfda8edfe020a89ce5fd1c55dca83792a12d46142f4a7b', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-24 01:41:40', '2025-09-24 01:41:40', '2026-09-24 08:41:40'),
 ('8c457dfb49a2bd6beb71c5f5bd2caa175d015713437669950cc36410f6d42479d73c2c090333b3eb', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:15:24', '2025-09-21 22:15:24', '2026-09-22 05:15:24'),
 ('8e463bf8681cebe75cd274e6bff15cd8ea3724487681cb4327d21287d63b2cbb465455b8612b6c20', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 19:27:36', '2025-09-14 19:27:36', '2026-09-15 02:27:36'),
 ('9083b92334f54ad208014a3090141d8a349b4da3bf6ed46fea39d9ac580e5f119d2d2c2ac37f3a27', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:12:44', '2025-09-12 19:12:44', '2026-09-13 02:12:44'),
 ('908c6efbaac08e14ca37efb94fdbcc8402dfc89f5d550afde7642c3ce43ec878eb638fffa11b7f12', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:04:42', '2025-09-21 22:04:42', '2026-09-22 05:04:42'),
+('927c4f403f42a45f7d6a30572ec4856f7c5260cbda2dda744f40ef197facaad9e0798b1659e86a8c', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-08 22:34:31', '2025-10-08 22:34:31', '2026-10-09 05:34:31'),
 ('93b7a24d7afca436ce555ae8fbd2ba7351e829b6cad95de3510fe980117cdb089463faa7f133b983', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:51:07', '2025-09-12 19:51:07', '2026-09-13 02:51:07'),
+('93e3dd2be7ab4c75454b2f04e0262560bf2a1bc0ae31b460ebca2a69e1505dd61f546a8eb4e905aa', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 09:27:29', '2025-09-29 09:27:29', '2026-09-29 16:27:29'),
 ('95ee071d1ef329c00271467eec591441f44a977d17450f08a96627be2d30849202723b02f6657359', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 02:27:11', '2025-09-29 02:27:11', '2026-09-29 09:27:11'),
 ('9987fa74a3be487c79f70f1d43431bd2c077e1ae374cf5d54f454f7d498f99e52bada8df0803eead', 10, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-12 00:08:31', '2025-09-12 00:08:33', '2026-09-12 07:08:31'),
 ('9b1324d73788c6218d03a70f223567a108a2343665d27c9a27e70f33aba94588993bea1a75984aaf', 20, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-24 02:47:46', '2025-09-24 02:47:46', '2026-09-24 09:47:46'),
@@ -178,6 +248,7 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('9d13ca4098f74725dc380b0143210a1b95d1c1dfed9ac04206b8d0b9c4122059e6a912bfe88a8474', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 00:38:06', '2025-09-13 00:38:07', '2026-09-13 07:38:06'),
 ('a22d3978d7c7c88b9b127913a88c4ff62687d7d2283d32d5d7d382f6cee0c6abe70e8ff44908d0a2', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 21:40:50', '2025-09-12 21:40:51', '2026-09-13 04:40:50'),
 ('a38b2d637eab6aafd82a6762b4b96b797223e877ae1c359a347d7893ff0f5daeb411518c5a624393', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:34:41', '2025-09-12 19:34:41', '2026-09-13 02:34:41'),
+('a3b136b60ff30e2fa296f27270c77f77672abd5be74bc591a999302d142c469ccff4fe14fb11884e', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-09 08:55:41', '2025-10-09 08:55:41', '2026-10-09 15:55:41'),
 ('a822af9d7befbd923ad319f9d0bd114392b83af5c847eec009da95e47e26c09405a1a8080ea4dff3', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-21 22:18:48', '2025-09-21 22:18:48', '2026-09-22 05:18:48'),
 ('a84f658c802412d1a50565d786441a8c3a2bc5bd9b9d0c6b22ebd029795e12b607316b97721e5d42', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 03:58:59', '2025-09-13 03:58:59', '2026-09-13 10:58:59'),
 ('a8be16d241ab08d78f21a31e2ea443c740cef98b0fa4b90989707de8b4f0cd8ff5f2f855fb3467b4', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 21:28:39', '2025-09-12 21:28:39', '2026-09-13 04:28:39'),
@@ -186,6 +257,8 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('aa52cdce4ff1eda9e5127347edbb1816e43cef5e6749f717c8d0fe74fa8ffccfda5a453636b38457', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-12 17:30:26', '2025-09-12 17:30:33', '2026-09-13 00:30:26'),
 ('ab7bc74b16792ed2e5a37fb5fe51c4eb516ad373d7c2072f200b77586213a2a3802a1831dec75778', 15, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:05:12', '2025-09-12 19:05:12', '2026-09-13 02:05:12'),
 ('abd8152b2744e0a45b6f50e5373db963236f3f0ad7e0fcbfcd6de342e0f0fc5ecea46fb9439a8208', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 15:43:33', '2025-09-13 15:43:33', '2026-09-13 22:43:33'),
+('adf6f32a66b410384a25eddcbc25c4f71a825d68ef39715048b39c0e219f6dd38bf2a0c0a2f6009e', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:24:56', '2025-09-29 10:24:56', '2026-09-29 17:24:56'),
+('ae25c0ed8a2aa1adf96074627ba8095bb63dcddeba0554f640954a88a3f788ac1b1efe4c5e3cb53d', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:28:32', '2025-09-29 10:28:32', '2026-09-29 17:28:32'),
 ('ae9ed87856b7f30b51eb80e71c4e4b4a83b2e69524be13b53b680388717dfb16f842d0c2c34bdb20', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 03:05:11', '2025-09-13 03:05:11', '2026-09-13 10:05:11'),
 ('afa2dd47136e9e808aa76e0ea5c327ff61e8e52a78546f0b6f4179e62ff656f814b8624c6072bef6', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 01:29:37', '2025-09-13 01:29:37', '2026-09-13 08:29:37'),
 ('b070b9646de57feaf81397927035bf82acce7a6514a891e594662a877fdfa37ef320565b1739a519', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 03:09:07', '2025-09-13 03:09:07', '2026-09-13 10:09:07'),
@@ -193,11 +266,15 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('b6103ed177f3913e46b6c7f9b04d60845524fcec877b34427b9064fb84b33597fb8eb8cda55fa290', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-23 07:23:13', '2025-09-23 07:23:13', '2026-09-23 14:23:13'),
 ('b9cf0d9a5251d8cb4f98fc1d969b718295d1a4617b9073bfa635567a46fd576cf503bc7f3762bae7', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:41:22', '2025-09-12 19:41:22', '2026-09-13 02:41:22'),
 ('bbb6701763276cafb83533d98e5d78a1e55c362b89b034792413b2b3b3970036ee363ffecaaf1a60', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-17 17:37:14', '2025-09-17 17:37:14', '2026-09-18 00:37:14'),
+('bd1b862ff2fe1eab8b210efba9d2d342cd1fc44f79fb1e67b8aa864cf58d443246cc0e971b106b56', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-08 21:17:42', '2025-10-08 21:17:43', '2026-10-09 04:17:42'),
 ('be51b44ae5e30c16eee1f4e8a597fd4ab0a72a87651eab751166e91328592e817e73421186fd196a', 16, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 18:47:55', '2025-09-14 18:47:55', '2026-09-15 01:47:55'),
 ('c309e4695ffe1c9e6bde4ad4651d3d677a2dc78368e3d573c0d41d3a6d9430925810a468ec290774', 12, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-12 00:52:36', '2025-09-12 00:52:42', '2026-09-12 07:52:36'),
+('c5765ddfe5efd48dd11f6323f257f66e3ec93812fe9465ea3ca66cf571e81d4a7ea8c34a2b130a10', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 09:11:13', '2025-09-29 09:11:13', '2026-09-29 16:11:13'),
+('c775e2659e1d04721186e2e699c9bcd2ff6fbc3df01442b254b5e7d5fb9b12813693b2df76231073', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:33:08', '2025-09-29 10:33:08', '2026-09-29 17:33:08'),
 ('c965b00ff8b2d41bc2635261265a941f01723eb367b0b52eeab401c3de3e9da376294321ebfe340e', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 17:19:45', '2025-09-12 17:19:45', '2026-09-13 00:19:45'),
 ('d065e53b926978b93224ee4d9c45736a9ae75f04d2619b9dd098977260fa675ec1983f564c9a6eba', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-22 01:49:56', '2025-09-22 01:49:56', '2026-09-22 08:49:56'),
 ('d3ede20b26af68a611d73e8c7c44936afc298f01d4d05055b26aef47381fac5d6b71f7b51978dc7a', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-18 21:17:30', '2025-09-18 21:17:30', '2026-09-19 04:17:30'),
+('d4586bbf65ad04cffd764be31aa1503d846b8d69c733a6598e619f3a2556b0fee3bba0bbea7b552d', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 10:25:10', '2025-09-29 10:25:10', '2026-09-29 17:25:10'),
 ('d59b0a06345d9c111af1a611f68617d137c301b2bef9c532df5befbf8ad9839a28f96fe9b463414d', 20, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-24 02:01:47', '2025-09-24 02:01:47', '2026-09-24 09:01:47'),
 ('d74f8af6fc91e0964db4edce936d619e3d625ddc83feddb2b52908ea281ebb6312256ea671e4cc79', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-18 21:09:31', '2025-09-18 21:09:31', '2026-09-19 04:09:31'),
 ('db45a98bf52b7afd9cad31642b3919d87dc8de62891ae9a578d6b8f584d23513de8052824c3a39cd', 17, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-15 19:46:03', '2025-09-15 19:46:03', '2026-09-16 02:46:03'),
@@ -215,6 +292,7 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('ea106b7060bd775972c5dfafa17bb14530c082160354886496abcdf5da5af66c79b953249467f577', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-15 18:03:48', '2025-09-15 18:03:48', '2026-09-16 01:03:48'),
 ('ece57218e14fba4a3972b819fb8e8a5e5c1ba4ece7256c7b7d66a86221c0b7055f257ba3fcd7ea39', 5, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 20:23:49', '2025-09-11 20:23:49', '2026-09-12 03:23:49'),
 ('efefb385612d77a2f01378f7b76dbe29ce5f33d0317cbd9f0b9b7f2a89794758c29a81e4a056a73f', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 01:19:19', '2025-09-13 01:19:19', '2026-09-13 08:19:19'),
+('f246ff628f9d14ebf0aec3394199ae967ab72c479b8aa41918381f85e9a6c90511b99e488d36e579', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 09:25:11', '2025-09-29 09:25:12', '2026-09-29 16:25:11'),
 ('f2cde83829084e583885a5901ad77b3d699a2263a6421f151d1581d76c708275e16fd50c9231e006', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 01:16:39', '2025-09-13 01:16:39', '2026-09-13 08:16:39'),
 ('f36bc22fda4d9a49184ce7d5bf049c4cdbbbf4daa7fa7e1e39b90c1ac819cc575635c9768aa70f97', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 01:31:51', '2025-09-13 01:31:51', '2026-09-13 08:31:51'),
 ('f39a241bb651eb48f0f20ebf690a027e6b9c86e5bfae98bd9498ad66084157660fe5e329ef1078f4', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-14 19:06:16', '2025-09-14 19:06:16', '2026-09-15 02:06:16'),
@@ -222,8 +300,10 @@ INSERT INTO `oauth_access_tokens` (`id`, `user_id`, `client_id`, `name`, `scopes
 ('f603ccac230c0b26e23281b2f81df0509207589c09d037b4ede2f588e499aacbc8cc0c0e3622adab', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 17:26:52', '2025-09-12 17:26:52', '2026-09-13 00:26:52'),
 ('f75186bcb568bf2499e702100309ff13d2ae648bf53218fed7f5db602e73b60d53bc499bcf2bdc03', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 01:13:58', '2025-09-13 01:13:58', '2026-09-13 08:13:58'),
 ('f769d2a0c3b90c4615376de60ef8dff713c184b83f8f8fedeae0c91610b8da006a787416bb88a6ec', 15, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-12 19:00:01', '2025-09-12 19:00:01', '2026-09-13 02:00:01'),
+('f8a98a59fcecd02cb2b4be3a0cc59c7e80dd3849afbec0a22cc5b8ef0c49972ab4bd69397d179174', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-10-05 01:01:41', '2025-10-05 01:01:41', '2026-10-05 08:01:41'),
 ('f939370cb23dea972788856cfcfb19573e6bcfe579ea8688633a9d3a3513161a7e8ce866a16c1d49', 13, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-13 16:12:15', '2025-09-13 16:12:15', '2026-09-13 23:12:15'),
 ('fde84c88837c18f32d973264e9fccb11974000f8b3960ee72cf254fb454e0860ed64887aaf90e895', 6, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 1, '2025-09-11 20:26:54', '2025-09-11 20:27:42', '2026-09-12 03:26:54'),
+('fe0b1e0fe8a4ee895235234e1330df92c2711f8be4a97ade4ed3aabccde8f50a6b231397280aaddc', 19, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-29 09:24:59', '2025-09-29 09:24:59', '2026-09-29 16:24:59'),
 ('ff0873c97f380070263cf1ac77f2820cb57152aba028c9a1bfe69403ae26b2915e6e2b8ef0b3033a', 5, '019937ae-16dd-737a-9d28-ededcd71ddf1', 'LaravelPassportToken', '[]', 0, '2025-09-11 23:44:14', '2025-09-11 23:44:14', '2026-09-12 06:44:14');
 
 -- --------------------------------------------------------
@@ -326,8 +406,12 @@ INSERT INTO `posts` (`id`, `user_id`, `pet_name`, `breed`, `description`, `image
 (15, 19, 'miu', 'mèo', 'dữ', 'posts/R52s1ed3qUf2qK6ZiHtNbDNCM1iWE69dWHPofSZo.jpg', 'cat', '2025-09-21 04:37:38', '2025-09-21 04:37:38'),
 (17, 19, 'ki', 'chuột', 'dơ', 'posts/SZCtrg1usjTslu6p3BEBXWVHJS4YyUb6VYU1bwfY.jpg', 'dog', '2025-09-21 04:53:00', '2025-09-21 04:53:00'),
 (18, 19, 'ttt', 'cat', 'tttttt', 'posts/UGF8AmrMhhMEdMODcUVIHkD1u9kJpJ3EviGFYHJx.jpg', 'dog', '2025-09-21 21:37:47', '2025-09-21 21:37:47'),
-(19, 13, 'kkk', 'dog', 'uuuu', 'posts/3VZAHoww4WvHAkwBLl3SLTHQVAe6B5RhfNJKqZaw.jpg', 'dog', '2025-09-21 22:14:59', '2025-09-21 22:14:59'),
-(21, 19, 'oo', 'dog', 'ttqyhs', 'posts/4EtdLAM0IBsHqpFgtOgBJkhSUYNbVvZz82C3juT2.jpg', 'dog', '2025-09-21 23:09:35', '2025-09-21 23:09:35');
+(21, 19, 'oo', 'dog', 'ttqyhs', 'posts/4EtdLAM0IBsHqpFgtOgBJkhSUYNbVvZz82C3juT2.jpg', 'dog', '2025-09-21 23:09:35', '2025-09-21 23:09:35'),
+(22, 13, 'jjjjj', 'dog', 'ttttttt', 'posts/jtcqSyR3ptB2HGgLvjyUbn27pHUCihwNcPrD5RbG.jpg', 'dog', '2025-09-29 10:18:28', '2025-09-29 10:18:28'),
+(23, 19, 'dog', 'dog', 'hfhfjfjjgjg', 'posts/azqXaWyZKQYRzfEDGJiNrdxtZKcUlQD5y7owstyr.jpg', 'dog', '2025-10-04 23:51:49', '2025-10-04 23:51:49'),
+(24, 21, 'lucky', 'chó', 'nhút nhát', 'posts/PJqq8RKbio5s3lGmRQX3wyQxXH0l23kKCvG6kZDY.jpg', 'dog', '2025-10-07 16:49:58', '2025-10-07 16:49:58'),
+(25, 13, 'lllll', 'rabit', 'yuyyuu', 'posts/rhCjazBVXFfBeYYdemSHiDd0hSDM9bJBq7QwmRum.jpg', 'dog', '2025-10-08 21:21:32', '2025-10-08 21:21:32'),
+(26, 13, 'iiii', 'cat', 'ttttt', 'posts/w4ZWwCGiUDQxGSy0hEXBO51qtdT2z1D62ZHcczqc.jpg', 'dog', '2025-10-09 04:20:09', '2025-10-09 04:20:09');
 
 -- --------------------------------------------------------
 
@@ -365,7 +449,9 @@ CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(255) NOT NULL,
   `pet_name` varchar(255) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
@@ -379,30 +465,47 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `pet_name`, `email`, `email_verified_at`, `password`, `remember_token`, `theme`, `created_at`, `updated_at`, `language`) VALUES
-(1, 'Phạm', NULL, 'pham@example.com', NULL, '$2y$12$rTgOnV9/86rbxCpIIYrU3Om1iwZ2w0B1KE0w3LnW0tUfAEUI6f4ba', NULL, NULL, '2025-09-11 00:37:53', '2025-09-11 00:37:53', 'vi'),
-(3, 'Phạm Huy', NULL, 'phamhuy@example.com', NULL, '$2y$12$V/ifFicnXQ2180/kNYTKlexvMJEsh3M/mfZ0KCbs4/BTxdsoR/1Ee', NULL, NULL, '2025-09-11 01:12:18', '2025-09-11 01:12:18', 'vi'),
-(4, 'Phạm Huy ne', NULL, 'phamhuyne@example.com', NULL, '$2y$12$Pzenm01usgAYwB4FRxM1RO6DgavvIQdbnexsI6zpw3T0wHUGObJjm', NULL, NULL, '2025-09-11 19:02:22', '2025-09-11 19:02:22', 'vi'),
-(5, 'Huy', NULL, 'phamquochuy28102004@gmail.com', NULL, '$2y$12$vC8MkENMyiEjw.2d069ZE.rO0beIgjo1/wKONNGq6Tf8rz9yMROPa', NULL, NULL, '2025-09-11 20:23:27', '2025-09-11 20:23:27', 'vi'),
-(6, 'duc', NULL, 'duc@gmail.com', NULL, '$2y$12$Vyst7uu3vL7boytSQ/LGO.NhOL646yKdG6AflQ/Du9/HsSYBL0YzO', NULL, NULL, '2025-09-11 20:26:51', '2025-09-11 20:26:51', 'vi'),
-(7, 'huyneae', NULL, 'phamquochuy@gmail.com', NULL, '$2y$12$lqzziArEDfPYNZsbd9S9X.7ucdnEPfeqZdpHOAfC.wXeQLFviJRw6', NULL, NULL, '2025-09-12 00:03:24', '2025-09-12 00:03:24', 'vi'),
-(8, 'tu', NULL, 'tu@gmail.com', NULL, '$2y$12$uXhKD8X4k8fIl9oyiE1bg.cPHWyf1XIZZU9Ahp9az4bzdaqFkkeWe', NULL, NULL, '2025-09-12 00:07:02', '2025-09-12 00:07:02', 'vi'),
-(9, 'tuan', NULL, 'tuan@gmail.com', NULL, '$2y$12$/6wnrSnanW07QsC0UGVCYOEfoU4s6QsEx5txyKopsBvl7MG7l7iYS', NULL, NULL, '2025-09-12 00:07:20', '2025-09-12 00:07:20', 'vi'),
-(10, 'tuanghelo', NULL, 'tuanghelo@gmail.com', NULL, '$2y$12$On/uedHT8Gtv94ZG.OEYm.f6e0XGPyCEKAwwnUOxP1WW5Btr1ahdC', NULL, NULL, '2025-09-12 00:08:24', '2025-09-12 00:08:24', 'vi'),
-(11, 'ducdb', NULL, 'ducdb@gmail.com', NULL, '$2y$12$.7yu/wIgVT4D5dCzgSrQ5u6SgTZgRZtxos.0zd.Y.zV0aiJiyAKxK', NULL, NULL, '2025-09-12 00:11:12', '2025-09-12 00:11:12', 'vi'),
-(12, 'Qhuy', NULL, 'qhuy@gmail.com', NULL, '$2y$12$ulzwkBoZSzamqhfGf5EWi.JieAPM0G7l8iJIgFQonOiMLVgmz5S3y', NULL, NULL, '2025-09-12 00:52:28', '2025-09-12 00:52:28', 'vi'),
-(13, 'alo', NULL, 'alo@gmail.com', NULL, '$2y$12$dg4T.G2m4phnpWCfjOJmhugJSwer1xplxQXTT1lE82Z/KxXX4Qi6K', NULL, NULL, '2025-09-12 17:19:40', '2025-09-24 18:28:05', 'vi'),
-(14, 'toan', NULL, 'toan@gmail.com', NULL, '$2y$12$57aQNtQLjCvERxAcII3PIeIcRHLiDNfXJvRPjEupVO1CQBusy2nf2', NULL, NULL, '2025-09-12 18:57:30', '2025-09-12 18:57:30', 'vi'),
-(15, 'toan1', NULL, 'toan1@gmail.com', NULL, '$2y$12$Q//2XkDRVTykirfVd.r/a.Wk8Z9pWj.nQCyZjYptyVFi9ImZq9y1O', NULL, NULL, '2025-09-12 19:00:01', '2025-09-12 19:00:01', 'vi'),
-(16, 'q', NULL, 'q@gmail.com', NULL, '$2y$12$Bd9xmFgyOlfwjguFFdhVjeX0Z6FUVWTUXwFbQ9FidE/pQ9N81Ulrm', NULL, NULL, '2025-09-14 18:47:55', '2025-09-14 18:47:55', 'vi'),
-(17, 'huy', 'lucky', 'huy12@gmail.com', NULL, '$2y$12$eG8gPoWRugxeydCFuPXg/.6eztVw1pPspovOEaukddkZ/WFTg/oFq', NULL, NULL, '2025-09-15 19:45:52', '2025-09-15 19:57:22', 'en'),
-(18, 'tuancoi', 'luckyyyyy', 'tuancoi@gmail.com', NULL, '$2y$12$S1LjEkCnCcg22MOR1MQOK.cwsodEqS0rLRvu412bcLarfT0tO07Ta', NULL, NULL, '2025-09-17 17:36:02', '2025-09-17 17:36:02', 'vi'),
-(19, 'huy1', 'milu', 'huy1@gmail.com', NULL, '$2y$12$DiXeZ76RdgJZfgoM3P9PT.6DWt9cREmArslwGIwhYGeW.82GpdsEu', NULL, NULL, '2025-09-18 21:17:08', '2025-09-18 21:17:08', 'vi'),
-(20, 'duc', NULL, 'duc111@gmail.com', NULL, '$2y$12$FBvqJQyZGAxEeCipFINlD.Et1QmvIjk9Nx/vpxydg4ssNP.O8u3ei', NULL, NULL, '2025-09-23 07:23:44', '2025-09-23 07:23:44', 'vi');
+INSERT INTO `users` (`id`, `name`, `pet_name`, `phone`, `email`, `avatar`, `email_verified_at`, `password`, `remember_token`, `theme`, `created_at`, `updated_at`, `language`) VALUES
+(1, 'Phạm', NULL, NULL, 'pham@example.com', NULL, NULL, '$2y$12$rTgOnV9/86rbxCpIIYrU3Om1iwZ2w0B1KE0w3LnW0tUfAEUI6f4ba', NULL, NULL, '2025-09-11 00:37:53', '2025-09-11 00:37:53', 'vi'),
+(3, 'Phạm Huy', NULL, NULL, 'phamhuy@example.com', NULL, NULL, '$2y$12$V/ifFicnXQ2180/kNYTKlexvMJEsh3M/mfZ0KCbs4/BTxdsoR/1Ee', NULL, NULL, '2025-09-11 01:12:18', '2025-09-11 01:12:18', 'vi'),
+(4, 'Phạm Huy ne', NULL, NULL, 'phamhuyne@example.com', NULL, NULL, '$2y$12$Pzenm01usgAYwB4FRxM1RO6DgavvIQdbnexsI6zpw3T0wHUGObJjm', NULL, NULL, '2025-09-11 19:02:22', '2025-09-11 19:02:22', 'vi'),
+(5, 'Huy', NULL, NULL, 'phamquochuy28102004@gmail.com', NULL, NULL, '$2y$12$vC8MkENMyiEjw.2d069ZE.rO0beIgjo1/wKONNGq6Tf8rz9yMROPa', NULL, NULL, '2025-09-11 20:23:27', '2025-09-11 20:23:27', 'vi'),
+(6, 'duc', NULL, NULL, 'duc@gmail.com', NULL, NULL, '$2y$12$Vyst7uu3vL7boytSQ/LGO.NhOL646yKdG6AflQ/Du9/HsSYBL0YzO', NULL, NULL, '2025-09-11 20:26:51', '2025-09-11 20:26:51', 'vi'),
+(7, 'huyneae', NULL, NULL, 'phamquochuy@gmail.com', NULL, NULL, '$2y$12$lqzziArEDfPYNZsbd9S9X.7ucdnEPfeqZdpHOAfC.wXeQLFviJRw6', NULL, NULL, '2025-09-12 00:03:24', '2025-09-12 00:03:24', 'vi'),
+(8, 'tu', NULL, NULL, 'tu@gmail.com', NULL, NULL, '$2y$12$uXhKD8X4k8fIl9oyiE1bg.cPHWyf1XIZZU9Ahp9az4bzdaqFkkeWe', NULL, NULL, '2025-09-12 00:07:02', '2025-09-12 00:07:02', 'vi'),
+(9, 'tuan', NULL, NULL, 'tuan@gmail.com', NULL, NULL, '$2y$12$/6wnrSnanW07QsC0UGVCYOEfoU4s6QsEx5txyKopsBvl7MG7l7iYS', NULL, NULL, '2025-09-12 00:07:20', '2025-09-12 00:07:20', 'vi'),
+(10, 'tuanghelo', NULL, NULL, 'tuanghelo@gmail.com', NULL, NULL, '$2y$12$On/uedHT8Gtv94ZG.OEYm.f6e0XGPyCEKAwwnUOxP1WW5Btr1ahdC', NULL, NULL, '2025-09-12 00:08:24', '2025-09-12 00:08:24', 'vi'),
+(11, 'ducdb', NULL, NULL, 'ducdb@gmail.com', NULL, NULL, '$2y$12$.7yu/wIgVT4D5dCzgSrQ5u6SgTZgRZtxos.0zd.Y.zV0aiJiyAKxK', NULL, NULL, '2025-09-12 00:11:12', '2025-09-12 00:11:12', 'vi'),
+(12, 'Qhuy', NULL, NULL, 'qhuy@gmail.com', NULL, NULL, '$2y$12$ulzwkBoZSzamqhfGf5EWi.JieAPM0G7l8iJIgFQonOiMLVgmz5S3y', NULL, NULL, '2025-09-12 00:52:28', '2025-09-12 00:52:28', 'vi'),
+(13, 'alo', 'lili', '0359901563', 'alo@gmail.com', 'avatars/cae3IsC3YXp1TM97qFDlUIiHrn4WQfyu7COpNnk3.jpg', NULL, '$2y$12$aFisMFMAQ500RXkPYKw3yOJVWY8rOsWlWDsMIZdw3wUxMEU/Wd/uS', NULL, NULL, '2025-09-12 17:19:40', '2025-10-08 21:20:43', 'vi'),
+(14, 'toan', NULL, NULL, 'toan@gmail.com', NULL, NULL, '$2y$12$57aQNtQLjCvERxAcII3PIeIcRHLiDNfXJvRPjEupVO1CQBusy2nf2', NULL, NULL, '2025-09-12 18:57:30', '2025-09-12 18:57:30', 'vi'),
+(15, 'toan1', NULL, NULL, 'toan1@gmail.com', NULL, NULL, '$2y$12$Q//2XkDRVTykirfVd.r/a.Wk8Z9pWj.nQCyZjYptyVFi9ImZq9y1O', NULL, NULL, '2025-09-12 19:00:01', '2025-09-12 19:00:01', 'vi'),
+(16, 'q', NULL, NULL, 'q@gmail.com', NULL, NULL, '$2y$12$Bd9xmFgyOlfwjguFFdhVjeX0Z6FUVWTUXwFbQ9FidE/pQ9N81Ulrm', NULL, NULL, '2025-09-14 18:47:55', '2025-09-14 18:47:55', 'vi'),
+(17, 'huy', 'lucky', NULL, 'huy12@gmail.com', NULL, NULL, '$2y$12$eG8gPoWRugxeydCFuPXg/.6eztVw1pPspovOEaukddkZ/WFTg/oFq', NULL, NULL, '2025-09-15 19:45:52', '2025-09-15 19:57:22', 'en'),
+(18, 'tuancoi', 'luckyyyyy', NULL, 'tuancoi@gmail.com', NULL, NULL, '$2y$12$S1LjEkCnCcg22MOR1MQOK.cwsodEqS0rLRvu412bcLarfT0tO07Ta', NULL, NULL, '2025-09-17 17:36:02', '2025-09-17 17:36:02', 'vi'),
+(19, 'huy1', 'milu', NULL, 'huy1@gmail.com', 'avatars/Xyuyz9CGFKmhxb5MCjtdVCePER40A20BPfU7jOKs.jpg', NULL, '$2y$12$DiXeZ76RdgJZfgoM3P9PT.6DWt9cREmArslwGIwhYGeW.82GpdsEu', NULL, NULL, '2025-09-18 21:17:08', '2025-10-09 08:43:14', 'vi'),
+(20, 'duc', NULL, NULL, 'duc111@gmail.com', NULL, NULL, '$2y$12$FBvqJQyZGAxEeCipFINlD.Et1QmvIjk9Nx/vpxydg4ssNP.O8u3ei', NULL, NULL, '2025-09-23 07:23:44', '2025-09-23 07:23:44', 'vi'),
+(21, 'pqhuy', 'lucky', NULL, 'pqh@gmail.com', NULL, NULL, '$2y$12$dU06oYVpN49CkKSaZe3l9.3D2tTpeOEPHaN05/6XkwbsHWZyePvQ2', NULL, NULL, '2025-10-07 16:48:40', '2025-10-07 16:48:40', 'vi');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comments_user_id_foreign` (`user_id`),
+  ADD KEY `comments_post_id_foreign` (`post_id`);
+
+--
+-- Indexes for table `follows`
+--
+ALTER TABLE `follows`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `follows_follower_id_following_id_unique` (`follower_id`,`following_id`),
+  ADD KEY `follows_following_id_foreign` (`following_id`);
 
 --
 -- Indexes for table `likes`
@@ -481,32 +584,58 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `follows`
+--
+ALTER TABLE `follows`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=125;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `comments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `follows`
+--
+ALTER TABLE `follows`
+  ADD CONSTRAINT `follows_follower_id_foreign` FOREIGN KEY (`follower_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `follows_following_id_foreign` FOREIGN KEY (`following_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `likes`

@@ -1,3 +1,4 @@
+// dùng để hiển thị và quản lý các cài đặt quyền riêng tư của người dùng
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -123,6 +124,13 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
 
     if (token == null) return;
 
+    // Hiển thị loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
     try {
       final response = await http.put(
         Uri.parse('http://192.168.1.7:8000/api/users/${widget.userId}'),
@@ -138,19 +146,27 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
         }),
       );
 
+      // Đóng loading dialog
+      Navigator.pop(context);
+
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Cập nhật thông tin thành công')),
         );
-        _loadUserInfo();
+        await _loadUserInfo();
+        // Trả về true để ProfileScreen biết cần refresh
+        Navigator.pop(context, true);
       } else {
+        final errorData = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Lỗi khi cập nhật thông tin')),
+          SnackBar(content: Text(errorData['message'] ?? 'Lỗi khi cập nhật thông tin')),
         );
       }
     } catch (e) {
+      // Đóng loading dialog
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lỗi kết nối')),
+        SnackBar(content: Text('Lỗi kết nối: $e')),
       );
     }
   }
@@ -159,72 +175,101 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     final currentPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
+    bool obscureCurrentPassword = true;
+    bool obscureNewPassword = true;
+    bool obscureConfirmPassword = true;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Đổi mật khẩu'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: currentPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Mật khẩu hiện tại',
-                  prefixIcon: Icon(Icons.lock),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Đổi mật khẩu'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: currentPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Mật khẩu hiện tại',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(obscureCurrentPassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setDialogState(() {
+                          obscureCurrentPassword = !obscureCurrentPassword;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText: obscureCurrentPassword,
                 ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: newPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Mật khẩu mới',
-                  prefixIcon: Icon(Icons.lock_outline),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: newPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Mật khẩu mới',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(obscureNewPassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setDialogState(() {
+                          obscureNewPassword = !obscureNewPassword;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText: obscureNewPassword,
                 ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: confirmPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Xác nhận mật khẩu mới',
-                  prefixIcon: Icon(Icons.lock_outline),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: confirmPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Xác nhận mật khẩu mới',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setDialogState(() {
+                          obscureConfirmPassword = !obscureConfirmPassword;
+                        });
+                      },
+                    ),
+                  ),
+                  obscureText: obscureConfirmPassword,
                 ),
-                obscureText: true,
-              ),
-            ],
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Hủy'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (newPasswordController.text != confirmPasswordController.text) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Mật khẩu xác nhận không khớp')),
+                  );
+                  return;
+                }
+                if (newPasswordController.text.length < 6) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Mật khẩu phải có ít nhất 6 ký tự')),
+                  );
+                  return;
+                }
+                Navigator.pop(context);
+                await _changePassword(
+                  currentPasswordController.text,
+                  newPasswordController.text,
+                );
+              },
+              child: const Text('Đổi mật khẩu'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Hủy'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (newPasswordController.text != confirmPasswordController.text) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Mật khẩu xác nhận không khớp')),
-                );
-                return;
-              }
-              if (newPasswordController.text.length < 6) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Mật khẩu phải có ít nhất 6 ký tự')),
-                );
-                return;
-              }
-              await _changePassword(
-                currentPasswordController.text,
-                newPasswordController.text,
-              );
-              Navigator.pop(context);
-            },
-            child: const Text('Đổi mật khẩu'),
-          ),
-        ],
       ),
     );
   }
@@ -234,6 +279,13 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     final token = prefs.getString('token');
 
     if (token == null) return;
+
+    // Hiển thị loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
 
     try {
       final response = await http.post(
@@ -249,6 +301,9 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
         }),
       );
 
+      // Đóng loading dialog
+      Navigator.pop(context);
+
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Đổi mật khẩu thành công')),
@@ -256,12 +311,14 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
       } else {
         final data = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? 'Lỗi khi đổi mật khẩu')),
+          SnackBar(content: Text(data['error'] ?? 'Lỗi khi đổi mật khẩu')),
         );
       }
     } catch (e) {
+      // Đóng loading dialog
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lỗi kết nối')),
+        SnackBar(content: Text('Lỗi kết nối: $e')),
       );
     }
   }

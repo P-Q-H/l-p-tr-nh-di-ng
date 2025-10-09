@@ -1,8 +1,10 @@
 {
-  "login": "Đăng nhập",
-  "logout": "Đăng xuất",
+  "profile": "Hồ sơ người dùng",
   "settings": "Cài đặt",
-  "language": "Ngôn ngữ",
-  "hello": "Xin chào",
-  "post": "Bài viết"
+  "privacy": "Quyền riêng tư",
+  "logout": "Đăng xuất",
+  "edit_account": "Chỉnh sửa tài khoản",
+  "change_password": "Đổi mật khẩu",
+  "theme": "Giao diện",
+  "language": "Ngôn ngữ"
 }

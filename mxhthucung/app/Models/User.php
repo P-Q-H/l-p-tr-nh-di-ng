@@ -22,6 +22,19 @@ public function likes()
     return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
 }
 
+ // Người đang theo dõi user này (followers)
+public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+                    ->withTimestamps();
+    }
+
+    // Người mà user này đang theo dõi (following)
+public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+                    ->withTimestamps();
+    }
 
     protected $fillable = [
         'name',
@@ -29,6 +42,8 @@ public function likes()
         'password',
         'language',
         'pet_name',
+        'avatar',   
+        'phone', 
     ];
 
     protected $hidden = [

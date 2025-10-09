@@ -1,9 +1,10 @@
 {
-  "login": "Login",
-  "logout": "Logout",
+  "profile": "User Profile",
   "settings": "Settings",
-  "language": "Language",
-  "profile": "Profile",
-  "hello": "Hello",
-  "post": "Post"
+  "privacy": "Privacy",
+  "logout": "Logout",
+  "edit_account": "Edit Account",
+  "change_password": "Change Password",
+  "theme": "Theme",
+  "language": "Language"
 }
